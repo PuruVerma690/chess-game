@@ -32,8 +32,8 @@ string stockfishForm::toFEN() const
         int emptySquares = 0;
         for (int column = 0; column < 8; ++column)
         {
-            const int code = board.getPiece(row, column).getCode();
-            if (code == ChessPiece::Empty)
+            const int code = board.getPiece(row, column);
+            if (code == Piece::Empty)
             {
                 ++emptySquares;
                 continue;

@@ -3,13 +3,15 @@
 #include "ChessBoard.h"
 #include <string>
 
+using namespace std;
+
 class stockfishForm
 {
 private:
     const ChessBoard &board;
     bool whiteToMove;
-    std::string castlingAvailability;
-    std::string enPassantTarget;
+    string castlingAvailability;
+    string enPassantTarget;
     int halfmoveClock;
     int fullmoveNumber;
 
@@ -17,9 +19,9 @@ private:
 
 public:
     stockfishForm(const ChessBoard &chessBoard, bool whiteTurn = true,
-                  const std::string &castling = "KQkq",
-                  const std::string &enPassant = "-", int halfmove = 0,
+                  const string &castling = "KQkq",
+                  const string &enPassant = "-", int halfmove = 0,
                   int fullmove = 1);
-    std::string toFEN() const;
-    std::string getFEN() const;
+    string toFEN() const;
+    string getFEN() const;
 };

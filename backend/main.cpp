@@ -8,10 +8,11 @@ int main()
     Gameplay game;
     string move;
 
-    cout << "Chess game (vs Stockfish)\n";
-    cout << "You are White. Black is played by Stockfish.\n";
+    cout << "You vs Stockfish\n";
+    cout << "White moves first\n";
     cout << "Enter moves such as e2e4 or g1f3.\n";
-    cout << "Commands: board, fen, quit\n";
+    cout << "use fen to get fen from\n";
+    cout << "use quit or exit to exit the game\n";
 
     while (true)
     {
@@ -27,8 +28,6 @@ int main()
                 move.pop_back();
             if (move == "quit" || move == "exit")
                 break;
-            if (move == "board")
-                continue;
             if (move == "fen")
             {
                 cout << game.getStockfishForm() << '\n';
@@ -42,7 +41,6 @@ int main()
         }
         else
         {
-            // Black's turn: Send stockfishForm string to API and make the move in Gameplay
             if (!StockfishAPI::makeAIMove(game))
             {
                 cout << "No legal moves left. Game ended.\n";

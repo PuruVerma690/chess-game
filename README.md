@@ -2,7 +2,7 @@
 
 ## run project mac / linux
 ```sh
-c++ -std=c++17 -Wall -Wextra -pedantic backend/ChessPiece.cpp backend/ChessBoard.cpp backend/stockfishForm.cpp backend/Gameplay.cpp backend/StockfishAPI.cpp backend/main.cpp -o chess-game.exe
+c++ -std=c++17 -Wall -Wextra -pedantic backend/ChessBoard.cpp backend/stockfishForm.cpp backend/Gameplay.cpp backend/StockfishAPI.cpp backend/main.cpp -o chess-game.exe
 .\chess-game.exe
 ```
 
@@ -10,7 +10,7 @@ c++ -std=c++17 -Wall -Wextra -pedantic backend/ChessPiece.cpp backend/ChessBoard
 ```sh
 cd "C:\Users\User\OneDrive\Desktop\chess-game-main"
 
-c++ -std=c++17 -Wall -Wextra -pedantic ` backend\ChessPiece.cpp ` backend\ChessBoard.cpp ` backend\stockfishForm.cpp ` backend\Gameplay.cpp ` backend\StockfishAPI.cpp ` backend\main.cpp ` -o chess-game.exe
+c++ -std=c++17 -Wall -Wextra -pedantic backend\ChessBoard.cpp backend\stockfishForm.cpp backend\Gameplay.cpp backend\StockfishAPI.cpp backend\main.cpp -o chess-game.exe
 
 .\chess-game.exe
 ```

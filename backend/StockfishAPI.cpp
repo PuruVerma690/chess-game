@@ -3,12 +3,12 @@
 
 #include <iostream>
 #include <cstdio>
-#include <sstream>
 
 using namespace std;
 
 #ifdef _WIN32
-extern "C" {
+extern "C"
+{
     FILE *_popen(const char *command, const char *mode);
     int _pclose(FILE *stream);
 }
@@ -51,39 +51,19 @@ string StockfishAPI::getAIMove(const string &fen)
     const string command = "curl.exe -sS --fail \"" + url + "\"";
 
     FILE *pipe = _popen(command.c_str(), "r");
-    if (!pipe)
-    {
-        cerr << "[Error] Could not connect to the Lichess Cloud Evaluation API.\n";
-        return "";
-    }
 
     char buffer[256];
     string response;
     while (fgets(buffer, sizeof(buffer), pipe))
         response += buffer;
-    const int exitCode = _pclose(pipe);
-    if (exitCode != 0)
-    {
-        cerr << "[Error] Lichess has no cloud evaluation for this position or "
-                "the request failed.\n";
-        return "";
-    }
 
-    const size_t pos = response.find("\"moves\":\"");
-    if (pos == string::npos)
-    {
-        cerr << "[Error] Lichess returned no Stockfish move.\n";
-        return "";
-    }
+    const string key = "\"moves\":\"";
+    const size_t start = response.find(key);
 
-    stringstream ss(response.substr(pos + 9));
-    string move;
-    ss >> move;
+    const size_t moveStart = start + key.size();
+    const size_t moveEnd = response.find('"', moveStart);
 
-    if (move.size() < 4 || move[0] < 'a' || move[0] > 'h' ||
-        move[1] < '1' || move[1] > '8' || move[2] < 'a' ||
-        move[2] > 'h' || move[3] < '1' || move[3] > '8')
-        return "";
+    const string move = response.substr(moveStart, moveEnd - moveStart);
 
     return move.substr(0, 4);
 }
@@ -91,13 +71,13 @@ string StockfishAPI::getAIMove(const string &fen)
 bool StockfishAPI::makeAIMove(Gameplay &game)
 {
     string fen = game.getStockfishForm();
-    cout << "\n[Black AI] Sending FEN to Stockfish: " << fen << "\n";
+    cout << "\nSending FEN to Stockfish: " << fen << "\n";
 
     string move = getAIMove(fen);
 
     if (!move.empty() && game.playMove(move))
     {
-        cout << "[Black AI] Stockfish played: " << move << "\n\n";
+        cout << "Stockfish played: " << move << "\n\n";
         return true;
     }
 

@@ -1,4 +1,4 @@
-.env
 *.exe
 *.o
 /chess-game
+/Makefile

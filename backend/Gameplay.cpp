@@ -53,7 +53,7 @@ bool Gameplay::isPathClear(const ChessBoard &chessBoard, int sourceRow,
 
     while (row != destinationRow || column != destinationColumn)
     {
-        if (chessBoard.getPiece(row, column).getCode() != ChessPiece::Empty)
+        if (chessBoard.getPiece(row, column) != Piece::Empty)
             return false;
         row += rowStep;
         column += columnStep;
@@ -70,24 +70,24 @@ void Gameplay::removeCastlingRight(char right)
 
 void Gameplay::removeCastlingRights(int code, int row, int column)
 {
-    if (code == ChessPiece::WhiteKing)
+    if (code == Piece::WhiteKing)
     {
         removeCastlingRight('K');
         removeCastlingRight('Q');
     }
-    else if (code == ChessPiece::BlackKing)
+    else if (code == Piece::BlackKing)
     {
         removeCastlingRight('k');
         removeCastlingRight('q');
     }
-    else if (code == ChessPiece::WhiteRook)
+    else if (code == Piece::WhiteRook)
     {
         if (row == 7 && column == 0)
             removeCastlingRight('Q');
         else if (row == 7 && column == 7)
             removeCastlingRight('K');
     }
-    else if (code == ChessPiece::BlackRook)
+    else if (code == Piece::BlackRook)
     {
         if (row == 0 && column == 0)
             removeCastlingRight('q');
@@ -99,20 +99,20 @@ void Gameplay::removeCastlingRights(int code, int row, int column)
 void Gameplay::setupBoard()
 {
     const int whiteBackRank[] = {
-        ChessPiece::WhiteRook, ChessPiece::WhiteKnight, ChessPiece::WhiteBishop,
-        ChessPiece::WhiteQueen, ChessPiece::WhiteKing, ChessPiece::WhiteBishop,
-        ChessPiece::WhiteKnight, ChessPiece::WhiteRook};
+        Piece::WhiteRook, Piece::WhiteKnight, Piece::WhiteBishop,
+        Piece::WhiteQueen, Piece::WhiteKing, Piece::WhiteBishop,
+        Piece::WhiteKnight, Piece::WhiteRook};
     const int blackBackRank[] = {
-        ChessPiece::BlackRook, ChessPiece::BlackKnight, ChessPiece::BlackBishop,
-        ChessPiece::BlackQueen, ChessPiece::BlackKing, ChessPiece::BlackBishop,
-        ChessPiece::BlackKnight, ChessPiece::BlackRook};
+        Piece::BlackRook, Piece::BlackKnight, Piece::BlackBishop,
+        Piece::BlackQueen, Piece::BlackKing, Piece::BlackBishop,
+        Piece::BlackKnight, Piece::BlackRook};
 
     for (int column = 0; column < 8; ++column)
     {
-        board.setPiece(0, column, ChessPiece(blackBackRank[column]));
-        board.setPiece(1, column, ChessPiece(ChessPiece::BlackPawn));
-        board.setPiece(6, column, ChessPiece(ChessPiece::WhitePawn));
-        board.setPiece(7, column, ChessPiece(whiteBackRank[column]));
+        board.setPiece(0, column, blackBackRank[column]);
+        board.setPiece(1, column, Piece::BlackPawn);
+        board.setPiece(6, column, Piece::WhitePawn);
+        board.setPiece(7, column, whiteBackRank[column]);
     }
 }
 
@@ -145,7 +145,7 @@ bool Gameplay::playMove(const string &notation)
     const int sourceRow = rowFromRank(sourceRank);
     const int sourceColumn = columnFromFile(sourceFile);
     const int player = whiteTurn ? 1 : 2;
-    const int sourceCode = board.getPiece(sourceRow, sourceColumn).getCode();
+    const int sourceCode = board.getPiece(sourceRow, sourceColumn);
     if (sourceCode / 10 != player)
         return false;
 
@@ -159,22 +159,22 @@ bool Gameplay::playMove(const string &notation)
         const int direction = whiteTurn ? -1 : 1;
         const int startingRow = whiteTurn ? 6 : 1;
         const bool emptyDestination =
-            board.getPiece(destinationRow, destinationColumn).getCode() ==
-            ChessPiece::Empty;
+            board.getPiece(destinationRow, destinationColumn) ==
+            Piece::Empty;
         canMove = sourceColumn == destinationColumn &&
                   destinationRow - sourceRow == direction && emptyDestination;
         canMove = canMove ||
                   (sourceColumn == destinationColumn && sourceRow == startingRow &&
                    destinationRow - sourceRow == 2 * direction &&
-                   board.getPiece(sourceRow + direction, sourceColumn).getCode() ==
-                       ChessPiece::Empty &&
+                   board.getPiece(sourceRow + direction, sourceColumn) ==
+                       Piece::Empty &&
                    emptyDestination);
         canMove = canMove ||
                   (rowDistance == 1 && columnDistance == 1 &&
                    destinationRow - sourceRow == direction &&
-                   board.getPiece(destinationRow, destinationColumn).getCode() !=
-                       ChessPiece::Empty &&
-                   board.getPiece(destinationRow, destinationColumn).getCode() /
+                   board.getPiece(destinationRow, destinationColumn) !=
+                       Piece::Empty &&
+                   board.getPiece(destinationRow, destinationColumn) /
                            10 != player);
     }
     else if (requestedPiece == 'N')
@@ -198,29 +198,29 @@ bool Gameplay::playMove(const string &notation)
                               destinationColumn);
 
     const int destinationCode =
-        board.getPiece(destinationRow, destinationColumn).getCode();
-    if (canMove && destinationCode != ChessPiece::Empty &&
+        board.getPiece(destinationRow, destinationColumn);
+    if (canMove && destinationCode != Piece::Empty &&
         destinationCode / 10 == player)
         canMove = false;
 
     if (!canMove)
         return false;
 
-    const ChessPiece movingPiece = board.getPiece(sourceRow, sourceColumn);
-    const ChessPiece capturedPiece =
+    const int movingPiece = board.getPiece(sourceRow, sourceColumn);
+    const int capturedPiece =
         board.getPiece(destinationRow, destinationColumn);
-    removeCastlingRights(movingPiece.getCode(), sourceRow, sourceColumn);
-    removeCastlingRights(capturedPiece.getCode(), destinationRow,
+    removeCastlingRights(movingPiece, sourceRow, sourceColumn);
+    removeCastlingRights(capturedPiece, destinationRow,
                          destinationColumn);
     board.setPiece(destinationRow, destinationColumn, movingPiece);
-    board.setPiece(sourceRow, sourceColumn, ChessPiece());
+    board.setPiece(sourceRow, sourceColumn, Piece::Empty);
 
     enPassantTarget = "-";
     if (requestedPiece == 'P' && abs(destinationRow - sourceRow) == 2)
         enPassantTarget =
             squareName((sourceRow + destinationRow) / 2, sourceColumn);
 
-    if (requestedPiece == 'P' || capturedPiece.getCode() != ChessPiece::Empty)
+    if (requestedPiece == 'P' || capturedPiece != Piece::Empty)
         halfmoveClock = 0;
     else
         ++halfmoveClock;
@@ -248,9 +248,9 @@ void Gameplay::printBoard() const
         cout << 8 - row << ' ';
         for (int column = 0; column < 8; ++column)
         {
-            const int code = board.getPiece(row, column).getCode();
+            const int code = board.getPiece(row, column);
             char symbol = '.';
-            if (code != ChessPiece::Empty)
+            if (code != Piece::Empty)
             {
                 symbol = pieceLetter(code);
                 if (code / 10 == 2)

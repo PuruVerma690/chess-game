@@ -4,20 +4,22 @@
 #include <string>
 #include <vector>
 
+using namespace std;
+
 class Gameplay
 {
 private:
     ChessBoard board;
     bool whiteTurn = true;
-    std::string castlingAvailability = "KQkq";
-    std::string enPassantTarget = "-";
+    string castlingAvailability = "KQkq";
+    string enPassantTarget = "-";
     int halfmoveClock = 0;
     int fullmoveNumber = 1;
 
     static int rowFromRank(char rank);
     static int columnFromFile(char file);
     static char pieceLetter(int code);
-    static std::string squareName(int row, int column);
+    static string squareName(int row, int column);
     static bool isPathClear(const ChessBoard &board, int sourceRow,
                             int sourceColumn, int destinationRow,
                             int destinationColumn);
@@ -27,9 +29,9 @@ private:
 
 public:
     Gameplay();
-    bool playMove(const std::string &notation);
-    void playGame(const std::vector<std::string> &moves);
+    bool playMove(const string &notation);
+    void playGame(const vector<string> &moves);
     void printBoard() const;
     bool isWhiteTurn() const;
-    std::string getStockfishForm() const;
+    string getStockfishForm() const;
 };

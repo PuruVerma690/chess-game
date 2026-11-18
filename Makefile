@@ -3,7 +3,6 @@ CXXFLAGS ?= -std=c++17 -Wall -Wextra -pedantic
 
 TARGET := chess-game
 SOURCES := \
-	backend/ChessPiece.cpp \
 	backend/ChessBoard.cpp \
 	backend/stockfishForm.cpp \
 	backend/Gameplay.cpp \
