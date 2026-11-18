@@ -1,0 +1,9 @@
+rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq e6 0 2
+
+eld #	Value in Example	Meaning	Purpose
+1	rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR	Piece placement	Describes every square from rank 8 down to rank 1.
+2	w	Active color	Whose turn it is to move (w for White, b for Black).
+3	KQkq	Castling availability	Which sides are legally allowed to castle.
+4	e6	En passant target square	The landing square behind a pawn that just moved two steps.
+5	0	Halfmove clock	Turns since the last pawn advance or piece capture (50-move rule).
+6	2	Fullmove number	The overall turn number, incremented after Black plays.
