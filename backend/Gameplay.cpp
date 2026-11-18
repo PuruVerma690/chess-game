@@ -15,39 +15,12 @@ int Gameplay::columnFromFile(char file)
     return file - 'a';
 }
 
-char Gameplay::pieceLetter(int code)
-{
-    switch (code % 10)
-    {
-    case 2:
-        return 'N';
-    case 3:
-        return 'B';
-    case 4:
-        return 'R';
-    case 5:
-        return 'Q';
-    case 6:
-        return 'K';
-    default:
-        return 'P';
-    }
-}
-
-string Gameplay::squareName(int row, int column)
-{
-    string square;
-    square += static_cast<char>('a' + column);
-    square += static_cast<char>('8' - row);
-    return square;
-}
-
 bool Gameplay::isPathClear(const ChessBoard &chessBoard, int sourceRow,
                            int sourceColumn, int destinationRow,
                            int destinationColumn)
 {
-    const int rowStep = (destinationRow > sourceRow) - (destinationRow < sourceRow);
-    const int columnStep = (destinationColumn > sourceColumn) - (destinationColumn < sourceColumn);
+    const int rowStep = destinationRow > sourceRow ? 1 : destinationRow < sourceRow ? -1 : 0;
+    const int columnStep = destinationColumn > sourceColumn ? 1 : destinationColumn < sourceColumn ? -1 : 0;
     int row = sourceRow + rowStep;
     int column = sourceColumn + columnStep;
 
@@ -63,7 +36,7 @@ bool Gameplay::isPathClear(const ChessBoard &chessBoard, int sourceRow,
 
 void Gameplay::removeCastlingRight(char right)
 {
-    const string::size_type position = castlingAvailability.find(right);
+    const size_t position = castlingAvailability.find(right);
     if (position != string::npos)
         castlingAvailability.erase(position, 1);
 }
@@ -149,7 +122,7 @@ bool Gameplay::playMove(const string &notation)
     if (sourceCode / 10 != player)
         return false;
 
-    const char requestedPiece = pieceLetter(sourceCode);
+    const char requestedPiece = Piece::letter(sourceCode);
     const int rowDistance = abs(destinationRow - sourceRow);
     const int columnDistance = abs(destinationColumn - sourceColumn);
     bool canMove = false;
@@ -215,11 +188,6 @@ bool Gameplay::playMove(const string &notation)
     board.setPiece(destinationRow, destinationColumn, movingPiece);
     board.setPiece(sourceRow, sourceColumn, Piece::Empty);
 
-    enPassantTarget = "-";
-    if (requestedPiece == 'P' && abs(destinationRow - sourceRow) == 2)
-        enPassantTarget =
-            squareName((sourceRow + destinationRow) / 2, sourceColumn);
-
     if (requestedPiece == 'P' || capturedPiece != Piece::Empty)
         halfmoveClock = 0;
     else
@@ -251,12 +219,7 @@ void Gameplay::printBoard() const
             const int code = board.getPiece(row, column);
             char symbol = '.';
             if (code != Piece::Empty)
-            {
-                symbol = pieceLetter(code);
-                if (code / 10 == 2)
-                    symbol = static_cast<char>(
-                        tolower(static_cast<unsigned char>(symbol)));
-            }
+                symbol = Piece::tolower(code);
             cout << symbol << ' ';
         }
         cout << 8 - row << '\n';
@@ -272,6 +235,6 @@ bool Gameplay::isWhiteTurn() const
 string Gameplay::getStockfishForm() const
 {
     return stockfishForm(board, whiteTurn, castlingAvailability,
-                         enPassantTarget, halfmoveClock, fullmoveNumber)
+                         halfmoveClock, fullmoveNumber)
         .toFEN();
 }

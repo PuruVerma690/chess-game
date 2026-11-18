@@ -11,17 +11,14 @@ private:
     const ChessBoard &board;
     bool whiteToMove;
     string castlingAvailability;
-    string enPassantTarget;
     int halfmoveClock;
     int fullmoveNumber;
 
-    static char pieceLetter(int code);
 
 public:
     stockfishForm(const ChessBoard &chessBoard, bool whiteTurn = true,
                   const string &castling = "KQkq",
-                  const string &enPassant = "-", int halfmove = 0,
-                  int fullmove = 1);
+                  int halfmove = 0, int fullmove = 1);
     string toFEN() const;
     string getFEN() const;
 };

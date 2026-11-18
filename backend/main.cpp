@@ -41,11 +41,11 @@ int main()
         }
         else
         {
-            if (!StockfishAPI::makeAIMove(game))
-            {
-                cout << "No legal moves left. Game ended.\n";
-                break;
-            }
+            if (StockfishAPI::makeAIMove(game))
+                continue;
+
+            cout << "No legal moves left. Game ended.\n";
+            break;
         }
     }
 

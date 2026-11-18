@@ -1,31 +1,18 @@
 #include "stockfishForm.h"
-#include <cctype>
-#include <sstream>
 #include <string>
 using namespace std;
 stockfishForm::stockfishForm(const ChessBoard &chessBoard, bool whiteTurn,
                              const string &castling,
-                             const string &enPassant, int halfmove,
-                             int fullmove)
+                             int halfmove, int fullmove)
     : board(chessBoard), whiteToMove(whiteTurn),
-      castlingAvailability(castling), enPassantTarget(enPassant),
-      halfmoveClock(halfmove), fullmoveNumber(fullmove)
+      castlingAvailability(castling), halfmoveClock(halfmove),
+      fullmoveNumber(fullmove)
 {
-}
-
-char stockfishForm::pieceLetter(int code)
-{
-    static const char letters[] = {' ', ' ', 'N', 'B', 'R', 'Q', 'K'};
-    const int pieceType = code % 10;
-    const char letter = pieceType == 1 ? 'P' : letters[pieceType];
-    return code / 10 == 1
-               ? letter
-               : static_cast<char>(tolower(static_cast<unsigned char>(letter)));
 }
 
 string stockfishForm::toFEN() const
 {
-    ostringstream fen;
+    string fen;
 
     for (int row = 0; row < 8; ++row)
     {
@@ -41,23 +28,25 @@ string stockfishForm::toFEN() const
 
             if (emptySquares > 0)
             {
-                fen << emptySquares;
+                fen += to_string(emptySquares);
                 emptySquares = 0;
             }
-            fen << pieceLetter(code);
+            fen += Piece::tolower(code);
         }
 
         if (emptySquares > 0)
-            fen << emptySquares;
+            fen += to_string(emptySquares);
         if (row < 7)
-            fen << '/';
+            fen += '/';
     }
 
-    fen << (whiteToMove ? " w " : " b ")
-        << (castlingAvailability.empty() ? "-" : castlingAvailability)
-        << ' ' << (enPassantTarget.empty() ? "-" : enPassantTarget)
-        << ' ' << halfmoveClock << ' ' << fullmoveNumber;
-    return fen.str();
+    fen += whiteToMove ? " w " : " b ";
+    fen += castlingAvailability.empty() ? "-" : castlingAvailability;
+    fen += " - ";
+    fen += to_string(halfmoveClock);
+    fen += ' ';
+    fen += to_string(fullmoveNumber);
+    return fen;
 }
 
 string stockfishForm::getFEN() const

@@ -12,14 +12,11 @@ private:
     ChessBoard board;
     bool whiteTurn = true;
     string castlingAvailability = "KQkq";
-    string enPassantTarget = "-";
     int halfmoveClock = 0;
     int fullmoveNumber = 1;
 
     static int rowFromRank(char rank);
     static int columnFromFile(char file);
-    static char pieceLetter(int code);
-    static string squareName(int row, int column);
     static bool isPathClear(const ChessBoard &board, int sourceRow,
                             int sourceColumn, int destinationRow,
                             int destinationColumn);
